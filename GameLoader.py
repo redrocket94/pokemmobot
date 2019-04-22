@@ -28,19 +28,41 @@ class GameLoader:
 
     # Initialization of game instance
     def __init__(self, directory):
-        self.directory = directory
-        os.chdir(self.directory)
-        logging.basicConfig(filename=(self.originalDirectory + "\\log"),
-                            level=logging.DEBUG,
-                            format=self.LOG_FORMAT,
-                            filemode="w")
-        self.logger = logging.getLogger()
+        try:
 
-    # Function to print to console and store in log same message
+            logging.basicConfig(filename=(self.originalDirectory + "\\log"),
+                                level=logging.DEBUG,
+                                format=self.LOG_FORMAT,
+                                filemode="w")
+            self.logger = logging.getLogger()
+
+            self._PrintAndLog("Created log in: " + self.originalDirectory)
+
+            self.directory = directory
+            os.chdir(self.directory)
+
+        except Exception as e:
+            print("ERROR:", e)
+            exit()
+        finally:
+            self._PrintAndLog("Program initialized")
+
+    # Function to print to console and store in log same message as info
     # TODO optimize with logging module
-    def _PrintAndLog(self, message):
+    def _PrintAndLog(self, message, level=20):
         print(message)
-        self.logger.debug(message)
+        if level is 10:
+            self.logger.debug(message)
+        elif level is 20:
+            self.logger.info(message)
+        elif level is 30:
+            self.logger.warning(message)
+        elif level is 40:
+            self.logger.error(message)
+        elif level is 50:
+            self.logger.critical(message)
+        else:
+            return
 
 
     # Function to start game, connect and wrap
@@ -60,8 +82,7 @@ class GameLoader:
             self.game_wrapped = self.game.window().wrapper_object()
             self._PrintAndLog("Game wrapped!")
         except Exception as e:
-            self._PrintAndLog("Could not start game! Shutting down...")
-            self.logger.error(e)
+            self._PrintAndLog("Could not start game! Shutting down...\n" + e, 50)
             exit()
 
 
@@ -74,8 +95,7 @@ class GameLoader:
                         # TODO add real functionality
                         print(process)
         except Exception as e:
-            self._PrintAndLog("Error occurred, was unable to retrieve PID list for all processes!")
-            self.logger.error(e)
+            self._PrintAndLog("Error occurred, was unable to retrieve PID list for all processes!\n" + e, 40)
 
 
     # Function to find and connect to first instance (default) of PokeMMO found
@@ -89,8 +109,7 @@ class GameLoader:
 
             self._PrintAndLog("Success!")
         except Exception as e:
-            self._PrintAndLog("Error has occured, shutting down...")
-            self.logger.error(e)
+            self._PrintAndLog("Error has occured, shutting down...", 50)
             exit()
 
 
@@ -104,6 +123,5 @@ class GameLoader:
                 coordsList[i] = int(re.sub(r"\D", "", coordsList[i]))
             return coordsList
         except Exception as e:
-            self._PrintAndLog("Failed returning window coords!")
-            self.logger.error(e)
+            self._PrintAndLog("Failed returning window coords!\n" + e, 40)
             exit()
