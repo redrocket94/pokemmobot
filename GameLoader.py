@@ -109,7 +109,7 @@ class GameLoader:
 
             self._PrintAndLog("Success!")
         except Exception as e:
-            self._PrintAndLog("Error has occured, shutting down...", 50)
+            self._PrintAndLog(("Error has occured, shutting down...", e), 50)
             exit()
 
 
@@ -121,7 +121,7 @@ class GameLoader:
             coordsList = coordsStr.split(",")
             for i in range(4):
                 coordsList[i] = int(re.sub(r"\D", "", coordsList[i]))
-            return coordsList
+            return tuple(coordsList)
         except Exception as e:
             self._PrintAndLog("Failed returning window coords!\n" + e, 40)
             exit()

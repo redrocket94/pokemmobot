@@ -1,9 +1,11 @@
-import GameLoader
+import GameLoader, ScreenGrabber
 import time
 
 game = GameLoader.GameLoader("C:\\Users\\Oliver\\AppData\\Roaming\\PokeMMO")
+scrGrab = ScreenGrabber.ScreenGrabber()
 game.StartGame()
 time.sleep(5)
 game.GetAllPIDs()
-coords = game.GetWindowCoords()
-print(coords)
+time.sleep(1)
+while True:
+    scrGrab.CaptureImg(dimensions=game.GetWindowCoords())
